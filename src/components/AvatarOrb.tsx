@@ -8,7 +8,7 @@ type Props = {
   size?: number;
 };
 
-export default function AvatarOrb({ src = "/avatar.svg", alt = "Avatar", size = 140 }: Props) {
+export default function AvatarOrb({ src = "/avatar.png", alt = "Avatar", size = 140 }: Props) {
   return (
     <div className="relative" style={{ width: size, height: size }}>
       <div className="absolute -inset-4 rounded-full bg-gradient-to-tr from-primary/30 via-accent/20 to-transparent blur-2xl" />
