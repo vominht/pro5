@@ -1,11 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Github, Linkedin, Mail, ArrowRight, Cpu, Code2, Sparkles, Trophy, Calendar, MapPin, Star, Download, ExternalLink, Briefcase, GraduationCap, Award, BookOpen, Users, Zap } from "lucide-react";
+import { Github, Linkedin, Mail, Cpu, Code2, Sparkles, Trophy, MapPin, Star, ExternalLink, Briefcase, GraduationCap, BookOpen, Users, Zap } from "lucide-react";
 import TerminalCard from "@/components/TerminalCard";
-import TiltCard from "@/components/TiltCard";
-import AnimatedGrid from "@/components/AnimatedGrid";
-import Particles from "@/components/Particles";
 import Parallax from "@/components/Parallax";
 import AvatarOrb from "@/components/AvatarOrb";
 
@@ -172,7 +169,7 @@ export default function Home() {
               icon: <BookOpen className="text-success" />, title: "Khác", items: ["Clean Architecture", "TDD", "Microservices", "GraphQL", "WebSockets", "SEO"]
             }].map((s, i) => (
               <SpringCard key={i} className="h-full">
-                <div className="glass rounded-xl p-6 border border-border/50 backdrop-blur-sm bg-card/90 h-full hover:border-primary/50 transition-all duration-300">
+                <div className="glass rounded-xl p-6 border border-border/50 backdrop-blur-sm bg-card/90 h-full hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10">
                   <div className="flex items-center gap-3 mb-4">
                     {s.icon}
                     <h3 className="font-semibold text-lg">{s.title}</h3>

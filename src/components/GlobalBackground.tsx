@@ -1,10 +1,5 @@
 "use client";
 
-import AnimatedGrid from "@/components/AnimatedGrid";
-import Particles from "@/components/Particles";
-
-
-
 export default function GlobalBackground() {
   return (
     <div className="fixed inset-0 -z-50 overflow-hidden pointer-events-none">
@@ -14,14 +9,6 @@ export default function GlobalBackground() {
       
       {/* Base grid dots */}
       <div className="absolute inset-0 grid-dots opacity-15 -z-5" />
-      
-      {/* Animated 3D grid */}
-      <AnimatedGrid className="opacity-30 -z-4" />
-      
-            {/* Floating particles */}
-      <Particles count={40} className="opacity-20 -z-3" />
-
-
     </div>
   );
 }

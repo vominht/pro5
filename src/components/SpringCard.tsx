@@ -1,7 +1,6 @@
 "use client";
 
-import { useSpring, animated } from '@react-spring/web';
-import { useGesture } from '@use-gesture/react';
+import { motion, useMotionValue, useSpring } from 'framer-motion';
 import { useRef } from 'react';
 
 type SpringCardProps = {
@@ -12,73 +11,62 @@ type SpringCardProps = {
 export default function SpringCard({ children, className = "" }: SpringCardProps) {
   const ref = useRef<HTMLDivElement>(null);
   
-  const [{ x, y, rotateX, rotateY, rotateZ, zoom, scale }, api] = useSpring(() => ({
-    x: 0,
-    y: 0,
-    rotateX: 0,
-    rotateY: 0,
-    rotateZ: 0,
-    zoom: 0,
-    scale: 1,
-    config: { mass: 5, tension: 350, friction: 40 }
-  }));
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const rotateX = useMotionValue(0);
+  const rotateY = useMotionValue(0);
+  const scale = useMotionValue(1);
+  
+  const springX = useSpring(x, { stiffness: 300, damping: 30 });
+  const springY = useSpring(y, { stiffness: 300, damping: 30 });
+  const springRotateX = useSpring(rotateX, { stiffness: 300, damping: 30 });
+  const springRotateY = useSpring(rotateY, { stiffness: 300, damping: 30 });
+  const springScale = useSpring(scale, { stiffness: 300, damping: 30 });
 
-  const bind = useGesture({
-    onMove: ({ xy, hovering }) => {
-      if (!ref.current) return;
-      const rect = ref.current.getBoundingClientRect();
-      const x = xy[0] - rect.left - rect.width / 2;
-      const y = xy[1] - rect.top - rect.height / 2;
-      
-      api.start({
-        x: hovering ? x * 0.05 : 0,
-        y: hovering ? y * 0.05 : 0,
-        rotateX: hovering ? -(y * 0.05) : 0,
-        rotateY: hovering ? x * 0.05 : 0,
-        scale: hovering ? 1.02 : 1,
-        zoom: hovering ? 0.1 : 0,
-      });
-    },
-    onHover: ({ hovering }) => {
-      api.start({
-        scale: hovering ? 1.02 : 1,
-        zoom: hovering ? 0.1 : 0,
-      });
-    }
-  });
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!ref.current) return;
+    const rect = ref.current.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    
+    const mouseX = e.clientX - centerX;
+    const mouseY = e.clientY - centerY;
+    
+    x.set(mouseX * 0.05);
+    y.set(mouseY * 0.05);
+    rotateX.set(-mouseY * 0.02);
+    rotateY.set(mouseX * 0.02);
+  };
+
+  const handleMouseEnter = () => {
+    scale.set(1.1);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+    rotateX.set(0);
+    rotateY.set(0);
+    scale.set(1);
+  };
 
   return (
-    <animated.div
+    <motion.div
       ref={ref}
-      {...bind()}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       className={`relative cursor-pointer ${className}`}
       style={{
-        transform: 'perspective(600px)',
-        x,
-        y,
-        scale: scale.to(s => s),
-        rotateX: rotateX.to(r => `${r}deg`),
-        rotateY: rotateY.to(r => `${r}deg`),
-        rotateZ: rotateZ.to(r => `${r}deg`),
+        transform: 'perspective(1000px)',
+        x: springX,
+        y: springY,
+        scale: springScale,
+        rotateX: springRotateX,
+        rotateY: springRotateY,
       }}
     >
-      <animated.div
-        style={{
-          transform: zoom.to(z => `scale(${1 + z})`),
-        }}
-        className="relative"
-      >
-        {children}
-        
-        {/* Spring-powered glow effect */}
-        <animated.div
-          className="absolute inset-0 rounded-xl bg-gradient-to-tr from-primary/20 via-accent/10 to-transparent opacity-0 pointer-events-none"
-          style={{
-            opacity: zoom.to(z => z * 2),
-            filter: zoom.to(z => `blur(${z * 20}px)`),
-          }}
-        />
-      </animated.div>
-    </animated.div>
+      {children}
+    </motion.div>
   );
 }
